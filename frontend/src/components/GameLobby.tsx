@@ -10,6 +10,8 @@ import { depositXLM } from "../services/stellarService";
 import WalletDropdown from "./WalletDropdown";
 import { getTimeCategory, isValidTimeControl } from "../utils/timeControl";
 import { buildShareLink } from "../utils/shareLink";
+import { useTranslation } from "react-i18next";
+import LanguageSelector from "./LanguageSelector";
 
 // ── Time control options ───────────────────────────────────────────────────────
 const TIME_CONTROLS = [
@@ -417,6 +419,7 @@ function PendingGamesList({
 
 // ── Main component ────────────────────────────────────────────────────────────
 export default function GameLobby() {
+	const { t } = useTranslation();
 	const [gameCode, setGameCode] = useState("");
 	const [wagerEnabled, setWagerEnabled] = useState(false);
 	const [wagerAmount, setWagerAmount] = useState("");
@@ -668,22 +671,25 @@ export default function GameLobby() {
 							className="flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-sm font-semibold text-(--text-secondary) hover:text-(--text) hover:bg-(--bg-tertiary) transition-colors"
 						>
 							<Trophy size={14} className="text-(--accent-primary)" />
-							Tournaments
+							{t("tournament.title")}
 						</button>
 					</nav>
 				</div>
 				<p className="text-(--text-tertiary) text-xs hidden md:block">
 					{isConnected
-						? "Create or join a game below"
-						: "Connect your wallet to play on-chain chess"}
+						? t("lobby.subtitleConnected")
+						: t("lobby.subtitleDisconnected")}
 				</p>
-				{isConnected ? (
-                    <WalletDropdown />
-                ) : (
-                    <button onClick={connect} className="bg-(--accent-dark) hover:bg-(--accent-primary) px-4 py-1.5 rounded-lg text-sm font-bold transition-colors">
-                        Connect Freighter
-                    </button>
-                )}
+				<div className="flex items-center gap-2">
+					<LanguageSelector />
+					{isConnected ? (
+						<WalletDropdown />
+					) : (
+						<button onClick={connect} className="bg-(--accent-dark) hover:bg-(--accent-primary) px-4 py-1.5 rounded-lg text-sm font-bold transition-colors">
+							{t("common.connectWallet")}
+						</button>
+					)}
+				</div>
 			</header>
 
 			{/* ── Centered body ── */}
@@ -693,7 +699,7 @@ export default function GameLobby() {
 					{/* ── LEFT: Create game ── */}
 					<div className="flex-1 flex flex-col gap-3 p-5 sm:p-6 overflow-y-auto">
 						<p className="text-xs font-semibold text-(--text-tertiary) uppercase tracking-widest">
-							Create a game
+							{t("lobby.createGame")}
 						</p>
 
 						{/* Time control selector */}
@@ -701,7 +707,7 @@ export default function GameLobby() {
 							<div className="flex flex-col gap-2 p-3 bg-(--bg) border border-(--border) rounded-xl">
 								<div className="flex items-center gap-1.5 text-xs font-semibold text-(--text-tertiary) uppercase tracking-wider">
 									<Clock size={11} />
-									Game duration
+									{t("lobby.gameDuration")}
 								</div>
 								<div className="grid grid-cols-3 gap-1.5">
 					{TIME_CONTROLS.map((tc) => (
@@ -738,7 +744,7 @@ export default function GameLobby() {
 								: "border-(--border) bg-(--bg-secondary) text-(--text-secondary) hover:border-(--accent-primary)/50"
 						}`}
 					>
-						Custom
+						{t("common.custom")}
 						{isCustomTimeControl && (
 							<span className="text-(--accent-primary)">
 								{getTimeCategory(
@@ -753,7 +759,7 @@ export default function GameLobby() {
 					<div className="flex flex-col gap-3 pt-2">
 						<label className="flex flex-col gap-1 text-xs text-(--text-secondary)">
 							<span className="flex justify-between">
-								<span>Base time</span>
+										<span>{t("common.baseTime")}</span>
 								<strong>{customTimeControl.baseMinutes} min</strong>
 							</span>
 							<input
@@ -771,7 +777,7 @@ export default function GameLobby() {
 						</label>
 						<label className="flex flex-col gap-1 text-xs text-(--text-secondary)">
 							<span className="flex justify-between">
-								<span>Increment</span>
+										<span>{t("common.increment")}</span>
 								<strong>{customTimeControl.incrementSeconds} sec</strong>
 							</span>
 							<input
@@ -790,8 +796,8 @@ export default function GameLobby() {
 						<p className="text-[10px] text-(--text-tertiary)">
 							{customTimeControl.baseMinutes} min + {customTimeControl.incrementSeconds} sec increment · {effectiveTimeControl.tag}
 						</p>
-						{!isValidTimeControl(customTimeControl.baseMinutes, customTimeControl.incrementSeconds) && (
-							<p className="text-[10px] text-red-400">Choose a valid time control.</p>
+										{!isValidTimeControl(customTimeControl.baseMinutes, customTimeControl.incrementSeconds) && (
+							<p className="text-[10px] text-red-400">{t("game.timeControl.validTimeControl")}</p>
 						)}
 					</div>
 				)}

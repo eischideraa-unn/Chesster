@@ -67,7 +67,7 @@ describe("GameSettings Component", () => {
 		});
 
 		// Click on the backdrop
-		const backdrop = screen.getByText("Game Settings").closest("div")?.parentElement;
+		const backdrop = document.querySelector(".fixed.inset-0");
 		if (backdrop) {
 			fireEvent.click(backdrop);
 		}
@@ -191,7 +191,7 @@ describe("GameSettings Component", () => {
 			const stored = localStorage.getItem("chesster-game");
 			expect(stored).toBeTruthy();
 			const parsed = JSON.parse(stored!);
-			expect(parsed.isBlindfoldMode).toBe(true);
+			expect(parsed.state.isBlindfoldMode).toBe(true);
 		});
 	});
 

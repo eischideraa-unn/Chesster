@@ -1,8 +1,10 @@
 import { describe, it, expect, beforeEach, vi, afterEach } from "vitest";
-import { renderHook, act, waitFor } from "@testing-library/react";
+import { act } from "@testing-library/react";
 import { useWalletStore } from "../src/store/walletStore";
 import { useToastStore } from "../src/store/toastStore";
 import { referralApi, type ReferralStats } from "../src/api/referralApi";
+
+/* eslint-disable @typescript-eslint/no-explicit-any */
 
 // Mock the referralApi
 vi.mock("../src/api/referralApi", () => ({
@@ -130,8 +132,11 @@ describe("Referral Dashboard", () => {
 
 		it("should copy link to clipboard on button click", async () => {
 			// Mock document.execCommand
-			const mockExecCommand = vi.spyOn(document, "execCommand");
-			mockExecCommand.mockReturnValue(true);
+			const mockExecCommand = vi.fn().mockReturnValue(true);
+			Object.defineProperty(document, "execCommand", {
+				configurable: true,
+				value: mockExecCommand,
+			});
 
 			const referralLink = "https://example.com/join?ref=REF123456";
 
@@ -147,14 +152,17 @@ describe("Referral Dashboard", () => {
 			expect(mockExecCommand).toHaveBeenCalledWith("copy");
 
 			document.body.removeChild(input);
-			mockExecCommand.mockRestore();
+			delete (document as Document & { execCommand?: typeof mockExecCommand })
+				.execCommand;
 		});
 
 		it("should show success toast when copy succeeds", () => {
-			const { addToast } = useToastStore.getState();
 			const addToastSpy = vi.spyOn(useToastStore.getState(), "addToast");
 
-			addToast("Referral link copied to clipboard!", "success");
+			useToastStore.getState().addToast(
+				"Referral link copied to clipboard!",
+				"success",
+			);
 
 			expect(addToastSpy).toHaveBeenCalledWith(
 				"Referral link copied to clipboard!",

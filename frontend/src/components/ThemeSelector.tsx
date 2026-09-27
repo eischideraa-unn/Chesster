@@ -226,18 +226,20 @@ export default function ThemeSelector() {
 							{SOUND_PACKS.map((pack) => {
 								const active = pack.key === soundPack;
 								return (
-									<button
-										type="button"
+									<div
 										key={pack.key}
-										onClick={() => handleSoundPackChange(pack.key)}
 										className={`relative flex flex-col gap-1.5 rounded-xl border p-3 text-left transition-colors ${
 											active
-												? "border-(--accent-primary) ring-1 ring-(--accent-primary)/50"
-												: "border-(--border) hover:border-(--accent-primary)/40"
+											? "border-(--accent-primary) ring-1 ring-(--accent-primary)/50"
+											: "border-(--border) hover:border-(--accent-primary)/40"
 										}`}
-										aria-pressed={active}
 									>
-										<div className="flex items-start justify-between">
+										<button
+											type="button"
+											onClick={() => handleSoundPackChange(pack.key)}
+											className="flex w-full items-start justify-between text-left"
+											aria-pressed={active}
+										>
 											<div>
 												<div className="text-sm font-semibold">{pack.name}</div>
 												<div className="text-xs text-(--text-secondary) mt-0.5">{pack.description}</div>
@@ -245,7 +247,7 @@ export default function ThemeSelector() {
 											{active && (
 												<Check size={16} className="text-(--accent-primary) flex-shrink-0" />
 											)}
-										</div>
+										</button>
 										<button
 											type="button"
 											onClick={(e) => {
@@ -257,7 +259,7 @@ export default function ThemeSelector() {
 										>
 											Test Sound
 										</button>
-									</button>
+									</div>
 								);
 							})}
 						</div>

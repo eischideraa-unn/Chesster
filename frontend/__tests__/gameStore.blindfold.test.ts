@@ -73,22 +73,19 @@ describe("Game Store - Blindfold Mode", () => {
 		expect(stored).toBeTruthy();
 
 		const parsed = JSON.parse(stored!);
-		expect(parsed.isBlindfoldMode).toBe(true);
+		expect(parsed.state.isBlindfoldMode).toBe(true);
 	});
 
-	it("loads isBlindfoldMode from localStorage on store init", () => {
+	it("loads isBlindfoldMode from localStorage on store init", async () => {
 		// Simulate persisted state
 		const persisted = {
-			gameCode: null,
-			playerColor: null,
-			isBlindfoldMode: true,
+			state: { gameCode: null, playerColor: null, isBlindfoldMode: true },
+			version: 0,
 		};
 		localStorage.setItem("chesster-game", JSON.stringify(persisted));
 
-		// Create a new store instance (simulating page reload)
-		const newState = useGameStore.getState();
-		// After hydration from persist, isBlindfoldMode should be true
-		expect(newState.isBlindfoldMode).toBe(true);
+		await useGameStore.persist.rehydrate();
+		expect(useGameStore.getState().isBlindfoldMode).toBe(true);
 	});
 
 	it("correctly persists only isBlindfoldMode along with gameCode and playerColor", () => {
@@ -103,11 +100,11 @@ describe("Game Store - Blindfold Mode", () => {
 		const stored = localStorage.getItem("chesster-game");
 		const parsed = JSON.parse(stored!);
 
-		expect(parsed).toHaveProperty("gameCode", "TEST123");
-		expect(parsed).toHaveProperty("playerColor", "white");
-		expect(parsed).toHaveProperty("isBlindfoldMode", true);
-		expect(parsed).not.toHaveProperty("capturedWhite");
-		expect(parsed).not.toHaveProperty("selectedSquare");
+		expect(parsed.state).toHaveProperty("gameCode", "TEST123");
+		expect(parsed.state).toHaveProperty("playerColor", "white");
+		expect(parsed.state).toHaveProperty("isBlindfoldMode", true);
+		expect(parsed.state).not.toHaveProperty("capturedWhite");
+		expect(parsed.state).not.toHaveProperty("selectedSquare");
 	});
 
 	it("multiple rapid toggles work correctly", () => {
@@ -138,8 +135,8 @@ describe("Game Store - Blindfold Mode", () => {
 		const stored = localStorage.getItem("chesster-game");
 		const parsed = JSON.parse(stored!);
 
-		expect(parsed.gameCode).toBe("GAME1");
-		expect(parsed.isBlindfoldMode).toBe(true);
-		expect(parsed).not.toHaveProperty("selectedSquare");
+		expect(parsed.state.gameCode).toBe("GAME1");
+		expect(parsed.state.isBlindfoldMode).toBe(true);
+		expect(parsed.state).not.toHaveProperty("selectedSquare");
 	});
 });

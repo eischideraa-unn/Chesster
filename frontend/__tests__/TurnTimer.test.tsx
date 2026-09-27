@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import GameTimer from "../src/components/TurnTimer";
+/* eslint-disable no-constant-binary-expression, no-constant-condition */
 
 describe("GameTimer (TurnTimer) - Low Time Warning", () => {
 	describe("Component logic - isLowTime calculation", () => {
@@ -281,12 +281,12 @@ describe("GameTimer (TurnTimer) - Low Time Warning", () => {
 		});
 
 		it("should handle time decrement and threshold crossing", () => {
-			// Time at 21 seconds
-			const isLowTime1 = true && (21 <= 20 || 21 <= 600 * 0.1);
+			// Above the 10% threshold (60 seconds) for a 10-minute game
+			const isLowTime1 = true && (61 <= 20 || 61 <= 600 * 0.1);
 			expect(isLowTime1).toBe(false);
 
-			// Time decrements to 20 seconds
-			const isLowTime2 = true && (20 <= 20 || 20 <= 600 * 0.1);
+			// Time reaches the 10% threshold
+			const isLowTime2 = true && (60 <= 20 || 60 <= 600 * 0.1);
 			expect(isLowTime2).toBe(true);
 
 			// Time continues decrementing
